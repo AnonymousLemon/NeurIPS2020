@@ -1,0 +1,11 @@
+clc;clear;close all;
+X_train = importdata('arcene_train.data'); y_train = importdata('arcene_train.labels'); y_train = 0.5*(y_train+1);
+X_valid = importdata('arcene_valid.data'); y_valid = importdata('arcene_valid.labels'); y_valid = 0.5*(y_valid+1);
+
+%% Run the BoLBO algorithm
+BoLASSO_BgdGLM_Sparse(X_train,y_train,'binomial','arcene',[],X_valid,y_valid);
+
+%% Run simple Lasso with the same lambda's that BoLBO started with
+mdlstrct.parms.lamb0
+fit0 = glmnet(X_train(rndsd,:),y_train(rndsd),family,glm.options); %GLM + ElasticNet
+    
