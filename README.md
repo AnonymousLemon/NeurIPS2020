@@ -7,4 +7,4 @@ Use `optimization_experiment/opt_code/Matlab/main.m` in Matlab to run the optimi
 These are written in python. You can open them using Jupyter notebook. `dim_gaussian.ipynb` is used to pick the dimension of Gaussian sketching on a small synthetic data. `excess_risk.ipynb` was used to test our sketching&solve paradigm. The results will not be exactly the same as you see in the paper, since all the datasets are generated randomly.
 
 ## Download
-The code is packaged in the zip file you can directly download.
+You can download a compressed zip at [here](https://anonymouslemon.imfast.io/all_code.zip)
