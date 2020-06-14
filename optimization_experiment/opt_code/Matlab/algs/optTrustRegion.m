@@ -19,46 +19,35 @@ hist.objVal = [];
 hist.props = 1;
 hist.gradNorm = [];
 hist.testVal = zeros(1,1);
-hist.elapsed_time = [];
 
 
 xk = x0;
 k = 0;
 %%%%%%%%%%%%%%%%% Start of Printing Headers %%%%%%%%%%%%%%%%%%%%%%%%%%
-logBody0 = '%5i  %13g %13.2e \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t %13.2f\n';
-logBodyk = '%5i  %13g %13.2e %11.2f %13.2f %9i %14s %16.2e %13.2f\n';
-
-%logBody0 = '%5i  %13g %13.2e \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t %24.2f\n';
-%logBodyk = '%5i  %13g %13.2e  \t%10g %12.2e %7g %12.2g%12.2g%14g%15.2f\n';
+logBody0 = '%5i  %13g %13.2e \t\t\t\t %30.2f\n';
+logBodyk = '%5i  %13g %13.2e %13.2e %16.2e %13.2f\n';
 %%%%%%%%%%%%%%%%% End of Printing Headers %%%%%%%%%%%%%%%%%%%%%%%%%%
-hist.elapsed_time = 1E-16;
 hist = recordHistory(hist, objFun, xk, testFun);
 while true
     fail_count = 0;
     current_props = 0;
-    current_elapsed_time = 0;
-    tic;
     [fk,gk,Hk] = objFun(xk);
-    tt = toc; current_elapsed_time = current_elapsed_time + tt;
     if k == 0
         current_props = current_props + 2;
     else
         hist = recordHistory(hist, objFun, xk, testFun);
-        assert(length(hist.elapsed_time) == length(hist.objVal));
-        assert(length(hist.elapsed_time) == length(hist.testVal));
     end
     if mod(k,10) == 0
-        fprintf('%5s %11s %16s %14s %10s %15s %13s %10s %16s\n','k','fun','norm(g)', 'time(sec)', 'Delta', 'SubProbItrs', 'SubProbFlag', 'Props', 'Test Results');
+        fprintf('%5s %11s %16s %10s %15s %18s\n','k','fun','norm(g)', 'Delta', 'Props', 'Test Results');
     end
     if k >= 1
-        fprintf( logBodyk, k, hist.objVal(end) , norm(gk), hist.elapsed_time(end), delta, subProbIters, subProbFlag,hist.props(end),hist.testVal(end) );
+        fprintf( logBodyk, k, hist.objVal(end) , norm(gk), delta,hist.props(end),hist.testVal(end) );
     else
         fprintf( logBody0, k, hist.objVal(end), norm(gk), hist.testVal(end));
     end
     if norm(gk) < gradTol || k >= maxItrs || hist.props(end) > maxProps || delta == 0
         break;
     end
-    tic;
     steihaugParams = [0, subProbMaxItr, 0]; % parameters for Steighaug-CG
     while true % CG Steihaug Loop
         if fail_count == 0
@@ -78,7 +67,7 @@ while true
         f_new = objFun(xk + pk);
         current_props = current_props + 1;
         rho = (fk - f_new)/-mk;
-        if mk >= 0 || rho < eta2
+        if (mk >= 0 || rho < eta2 ) && delta > 0
             fail_count = fail_count + 1;
             % fprintf('FALIURE No. %d: delta = %g, rho = %g, iters: %g\n', fail_count, delta, rho,num);
             delta = delta/gamma1;
@@ -96,8 +85,6 @@ while true
         end
     end
     xk = xk + pk;
-    tt = toc; current_elapsed_time = current_elapsed_time + tt;
-    hist.elapsed_time = [hist.elapsed_time, hist.elapsed_time(end) + current_elapsed_time];
     k = k + 1;
     hist.props = [hist.props, hist.props(end) + current_props];
 end

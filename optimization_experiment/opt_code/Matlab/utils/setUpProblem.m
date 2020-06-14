@@ -63,23 +63,5 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%% Invex %%%%%%%%%%%%%%%%%%%%%%%%%%
-if any(strcmp(problemType,'invex01'))
-    objFun = @(x) invexFunReg01(x,A_train,regFun);
-    testFun = @(x) norm( dataStruct.A_test*x - dataStruct.b_test )/norm( dataStruct.b_test );
-end
-if any(strcmp(problemType,'invex02'))
-    objFun = @(x) invexFunReg02(x,dataStruct.A_train, regFun);
-    testFun = @(x) norm( dataStruct.A_test*x - dataStruct.b_test )/norm( dataStruct.b_test );
-end
-if any(strcmp(problemType,'invex03'))
-    objFun = @(x) invexFunReg03(x,dataStruct.A_train,regFun);
-    testFun = @(x) norm( dataStruct.A_test*x - dataStruct.b_test )/norm( dataStruct.b_test );
-end
-if any(strcmp(problemType,'invex04'))
-    objFun = @(x) invexFunReg04(x,dataStruct.A_train,regFun);
-    testFun = @(x) norm( dataStruct.A_test*x - dataStruct.b_test )/norm( dataStruct.b_test );
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 end

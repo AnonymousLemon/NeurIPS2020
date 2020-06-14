@@ -18,7 +18,6 @@ hist.objVal = [];
 hist.props = 1;
 hist.gradNorm = [];
 hist.testVal = zeros(1,1);
-hist.elapsed_time = [];
 xk = x0;
 k = 0;
 
@@ -29,48 +28,32 @@ if args.Prec
     Y = [];
 end
 %%%%%%%%%%%%%%%%% Start of Printing Headers %%%%%%%%%%%%%%%%%%%%%%%%%%
-logBody0 = '%5i  %13g %13.2e \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t %28.2f\n';
-logBodyk = '%5i  %13g %13.2e %13g %13.2e %9i %12g %16.2g %16.2e %13.2f\n';
-
-%logBody0 = '%5i  %13g %13.2e \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t %24.2f\n';
-%logBodyk = '%5i  %13g %13.2e  \t%10g %12.2e %7g %12.2g%12.2g%14g%15.2f\n';
+logBody0 = '%5i  %13g %13.2e \t\t\t\t %30.2f\n';
+logBodyk = '%5i  %13g %13.2e %13.2e %16.2e %13.2f\n';
 %%%%%%%%%%%%%%%%% End of Printing Headers %%%%%%%%%%%%%%%%%%%%%%%%%%
-hist.elapsed_time = 1E-16;
 hist = recordHistory(hist, objFun, xk, testFun);
 while true
     current_props = 0;
-    current_elapsed_time = 0;
-    tic;
     [~,gk,Hk] = objFun(xk);
-    
-    %%%%%%%%%%%%%% Debugging %%%%%%%%%%%%%%%%%
-    % H = Hk(eye(length(xk),length(xk)));
-    % condest(H)
-    % plot(abs(eig(H)));
-    % close all; H = Hk(eye(length(xk),length(xk))); D = sort(abs(eig(pinv(H))),'descend'); gamma = D(100)
-    %%%%%%%%%%%%%% Debugging %%%%%%%%%%%%%%%%%
+   
     
     if k == 0
         current_props = current_props + 2;
     end
-    tt = toc; current_elapsed_time = current_elapsed_time + tt;
     if k >=1
         hist = recordHistory(hist, objFun, xk, testFun);
-        assert(length(hist.elapsed_time) == length(hist.objVal));
-        assert(length(hist.elapsed_time) == length(hist.testVal));
     end
     if mod(k,10) == 0
-        fprintf('%5s %11s %16s %14s %10s %15s %13s %15s %10s %16s\n','k','fun','norm(g)', 'time(sec)', 'alpha', 'SubProbItrs', 'SubProbFlag', 'SubProbRelRes',  'Props', 'Test Results');
+        fprintf('%5s %11s %16s %10s %15s %18s\n','k','fun','norm(g)', 'alpha', 'Props', 'Test Results');
     end
     if k >= 1
-        fprintf( logBodyk, k, hist.objVal(end) , norm(gk), hist.elapsed_time(end), alpha, subProbIters, subProbFlag,subProbRelres,hist.props(end),hist.testVal(end) );
+        fprintf( logBodyk, k, hist.objVal(end) , norm(gk), alpha,hist.props(end),hist.testVal(end) );
     else
         fprintf( logBody0, k, hist.objVal(end), norm(gk), hist.testVal(end));
     end
     if norm(gk) < gradTol || k >= maxItrs || hist.props(end) > maxProps || alpha == 0
         break;
     end
-    tic;
     
     if isa(Hk,'function_handle')
         
@@ -147,8 +130,6 @@ while true
     g_prev = gk;
     p_prev = pk;
     alpha_prev = alpha;
-    tt = toc; current_elapsed_time = current_elapsed_time + tt;
-    hist.elapsed_time = [hist.elapsed_time, hist.elapsed_time(end) + current_elapsed_time];
     k = k + 1;
     hist.props = [hist.props, hist.props(end) + current_props];
 end

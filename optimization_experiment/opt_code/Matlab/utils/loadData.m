@@ -18,6 +18,8 @@ assert(strcmp(dataName,'arcene') || ... % start of classification names
     strcmp(dataName, 'housing') || ...
     strcmp(dataName, 'blog-feedback') || ...
     strcmp(dataName, 'forest-fire') || ...
+    strcmp(dataName,'WECs') || ...
+    strcmp(dataName,'slice') || ... 
     strcmp(dataName, 'UJIIndoorLoc-regression')); % end of regression names
 
 
@@ -117,7 +119,7 @@ end
 % Attribute 523 (Floor)
 % Attribute 524 (BuildingID)
 if strcmp(dataName, 'UJIIndoorLoc-classification')
-    attr = 523;
+    attr = 521;
     DD_train = xlsread('../../Data/UJIndoorLoc/trainingData.csv');
     A_train = DD_train( :, 1:520 );
     labels_train_raw = DD_train(:, attr);
@@ -326,6 +328,32 @@ if strcmp(dataName, 'UJIIndoorLoc-regression')
     DD_test = xlsread('../../Data/UJIndoorLoc/validationData.csv');
     A_test = DD_test( : , 1:520 );
     b_test = DD_test( : , 521 );
+end
+
+if strcmp(dataName,'WECs')
+    DD_train = xlsread('../../Data/WECs_DataSet/Sydney_Data.csv');
+    A_raw = DD_train( :, 1:end-1 );
+    b_raw = DD_train(:, end);
+    test_index = randsample(size(A_raw,1), ceil(0.1*size(A_raw,1)));
+    train_index = setdiff((1:size(A_raw,1))',test_index);
+    assert(isempty(intersect(test_index,train_index)));
+    A_train = A_raw( train_index, : );
+    b_train = b_raw( train_index, : );
+    A_test = A_raw( test_index, : );
+    b_test = b_raw( test_index, :);
+end
+
+if strcmp(dataName,'slice')
+    DD_train = xlsread('../../Data/slice/slice.csv');
+    A_raw = DD_train( :, 2:end-1 );
+    b_raw = DD_train(:, end);
+    test_index = randsample(size(A_raw,1), ceil(0.1*size(A_raw,1)));
+    train_index = setdiff((1:size(A_raw,1))',test_index);
+    assert(isempty(intersect(test_index,train_index)));
+    A_train = A_raw( train_index, : );
+    b_train = b_raw( train_index, : );
+    A_test = A_raw( test_index, : );
+    b_test = b_raw( test_index, :);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

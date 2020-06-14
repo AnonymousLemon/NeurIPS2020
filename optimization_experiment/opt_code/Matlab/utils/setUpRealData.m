@@ -7,14 +7,15 @@ assert( any(strcmp(problemType,'nlls')) || ...
 
 %%%%%%%%%%%%%%%%% Loading Data %%%%%%%%%%%%%%%%%%%%%%
 [A_train, b_train, A_test, b_test] = loadData(dataName);
-%A_train = normalizeData(A_train); A_test = normalizeData(A_test);
-%A_train = standardizeData(A_train); A_test = standardizeData(A_test);
+n = size(A_train,1);
+p = size(A_train,2);
 
+% A_train = normalizeData(A_train); A_test = normalizeData(A_test); A_train = full(A_train);
+%A_train = standardizeData(A_train); A_test = standardizeData(A_test);
+D = (logspace(0,3,p)); A_train = A_train.*D; A_test = A_test.*D;
 %A_train = A_train(1:1000,:);
 %b_train = b_train(1:1000,:);
 
-n = size(A_train,1);
-p = size(A_train,2);
 n_train = size(A_train,1);
 n_test = size(A_test,1);
 b_train = shiftdim(b_train);

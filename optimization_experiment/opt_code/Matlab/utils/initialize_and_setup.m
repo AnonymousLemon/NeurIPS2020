@@ -44,6 +44,8 @@ if (any(strcmp(dataNames, 'blogdata')) ||... % regression problems
         any(strcmp(dataNames, 'housing')) || ...
         any(strcmp(dataNames, 'blog-feedback')) || ...
         any(strcmp(dataNames, 'forest-fire')) || ...
+        any(strcmp(dataNames,'WECs')) || ...
+        any(strcmp(dataNames,'slice')) || ...
         any(strcmp(dataNames, 'UJIIndoorLoc-regression')))
     assert(strcmp(problemType{1},'tukeyBiweight') || strcmp(problemType{1},'tukeyBiweightFunReg'));
 end
@@ -102,11 +104,7 @@ for i = 1:length(dataNames)
         regType = {'none'};
     end
     saveName = [dataName,'_','n_',num2str(dataStruct.n_train),'_','d_',num2str(dataStruct.d),'_','Precond_',num2str(args.Prec),'_','Lambda_',num2str(regParam),'_','subMaxItr_',num2str(args.subProbMaxItr),'_','subRelTol_',num2str(args.subProbRelTol,'%1.0e'),'_','x0_',initialIterate{1}];
-    dir_name = ['../results/',problemType{1},'_',regType{1},'/',saveName];
-    if ~exist(dir_name, 'dir')
-        mkdir(dir_name);
-    end
-    %file_name = [dir_name,'/',dataName];
+    dir_name = ['./results/',problemType{1},'_',regType{1},'/',saveName];
     
     %%
     if any(strcmp(problemType,'nlls')) || any(strcmp(problemType,'softmax'))
